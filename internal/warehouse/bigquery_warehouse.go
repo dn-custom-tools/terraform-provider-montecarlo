@@ -313,6 +313,7 @@ func (r *BigQueryWarehouseResource) ImportState(ctx context.Context, req resourc
 func (r *BigQueryWarehouseResource) testCredentials(ctx context.Context, data BigQueryWarehouseResourceModel) (*client.TestBqCredentialsV2, diag.Diagnostics) {
 	var diagsResult diag.Diagnostics
 	type BqConnectionDetails map[string]interface{}
+	type ConnectionTestOptions map[string]interface{}
 	testResult := client.TestBqCredentialsV2{}
 	variables := map[string]interface{}{
 		"validationName": "save_credentials",
@@ -320,6 +321,9 @@ func (r *BigQueryWarehouseResource) testCredentials(ctx context.Context, data Bi
 			"serviceJson": b64.StdEncoding.EncodeToString(
 				[]byte(data.Credentials.ServiceAccountKey.ValueString()),
 			),
+		},
+		"connectionOptions": ConnectionTestOptions{
+			"dcId": data.CollectorUuid.ValueString(),
 		},
 	}
 
